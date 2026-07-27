@@ -28,6 +28,8 @@ import unittest
 
 from pathlib import Path, PureWindowsPath
 
+import pytest
+
 from neo.rawio.alphaomegarawio import AlphaOmegaRawIO
 
 from neo.test.rawiotest.common_rawio_test import BaseTestRawIO
@@ -35,6 +37,7 @@ from neo.test.rawiotest.common_rawio_test import BaseTestRawIO
 logging.getLogger().setLevel(logging.INFO)
 
 
+@pytest.mark.filterwarnings("error:Setting the shape on a NumPy array has been deprecated:DeprecationWarning")
 class TestAlphaOmegaRawIO(BaseTestRawIO, unittest.TestCase):
     rawioclass = AlphaOmegaRawIO
 

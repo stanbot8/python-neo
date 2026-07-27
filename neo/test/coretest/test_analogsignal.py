@@ -9,6 +9,7 @@ import warnings
 import unittest
 
 import numpy as np
+import pytest
 import quantities as pq
 
 from neo.core.dataobject import ArrayDict
@@ -65,6 +66,7 @@ class TestAnalogSignalConstructor(unittest.TestCase):
         self.assertEqual(signal.t_stop, len(data) / rate)
         self.assertEqual(signal[9, 0], 9000 * pq.uV)
 
+    @pytest.mark.filterwarnings("error:Setting the shape on a NumPy array has been deprecated:DeprecationWarning")
     def test__create_from_1d_np_array(self):
         data = np.arange(10.0)
         rate = 1 * pq.kHz

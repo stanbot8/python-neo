@@ -1,19 +1,19 @@
 {
   "definition_blob_sha1": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "0588ba302e7a97a9721ae7494f6b9aca053476b6",
-    ".github/workflows/black-formatting.yml": "d489fdf866c0eb8b05081f1eea8033c6ca28ab83",
-    ".github/workflows/caches_cron_job.yml": "a904b51e637483754bd290a59ff91c9648c9ea34",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "19a08c54805eda29a4d6ebcf452ef975945919b1",
-    ".github/workflows/plexon2-testing.yml": "c41103b85ed0308997eece0d6bdbdf6a99285321"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "211d78b275bbb87055d46d18edfc9b309afb7fd3",
+    ".github/workflows/black-formatting.yml": "1cd92d19e57ef1df18f391eb3f5a75acddce46f9",
+    ".github/workflows/caches_cron_job.yml": "c88bc09020b112f36089d5e0e55116a4456dd48e",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "07c18bbb0fe453a40721fbbe5ae7b9bab228beb6",
+    ".github/workflows/plexon2-testing.yml": "82d103b38ceaac7e93578b1694dff1e224b95421"
   },
   "definition_sha256": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "d3dacd19a9c94cd86ca5ba24b075c35f3ff224d155ca5891f3b4325ece933dac",
-    ".github/workflows/black-formatting.yml": "595ffd687f3c8b37369b77b0370430daaa80dc45c6b4b58affd3b93f4bee7e07",
-    ".github/workflows/caches_cron_job.yml": "0d0e66a6ccf8835cef9c29386e249488e94b1e1d2d40218be436413b2b871ce6",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "d0d7889db07377c98d940d873bc0ff1b3eb61c4b00c07b7b71f12b4c1b11d768",
-    ".github/workflows/plexon2-testing.yml": "e59d73358dd89403d92a06ea14ce15f9703341ab66a8b96a3b75832ec86aa411"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "4cac5461d20019fd71bd15ab6e775a433bcfc570d3cc96f9132a4bf68d15c04e",
+    ".github/workflows/black-formatting.yml": "6f73eddfd5b4b45f125e9e923295e0ad95df24c104969b35961fb9de032b7803",
+    ".github/workflows/caches_cron_job.yml": "edb8abb839d8797dc762da3536a76fd4b5210517a3ebb65644bfb5720e225dfc",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "b767d389b86a947036ff5752de1a3a4c61333713b7dc8724dcae52a0e5d1e5ef",
+    ".github/workflows/plexon2-testing.yml": "0477c7cff46f60a4cfa5484832f0738793dbf15145c88580313c490c2ddbd403"
   },
-  "generator_sha256": "f238e5d52b0ec5c07f088af203f93698fbdea22a995856dc18c50f5365431353",
+  "generator_sha256": "f5fbad0230ba7fa85305a317f424ab1f31bb96ff28ce023a46664fdaad8051c9",
   "schema": "alpha-bridge/fork-ci",
   "source_branch": "master",
   "source_commit": "5f64a9e03896489311d0047a27f8bf74786a8453",

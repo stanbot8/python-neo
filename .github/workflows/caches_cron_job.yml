@@ -65,8 +65,9 @@ jobs:
   create-data-cache-if-missing:
     name: Caching data env
     runs-on: ubuntu-latest
-    steps: -
-      name: Get current hash (SHA) of the ephy_testing_data repo
+    steps:
+
+    - name: Get current hash (SHA) of the ephy_testing_data repo
       id: ephy_testing_data
       run: |
         echo "dataset_hash=$(git ls-remote https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git HEAD | cut -f1)" >> $GITHUB_OUTPUT

@@ -81,8 +81,9 @@ jobs:
           steps.ephy_testing_data.outputs.dataset_hash }}
 
     - name: Cache found?
-      run: echo "Cache-hit == ${{steps.cache-datasets.outputs.cache-hit == 
-        'true'}}"
+      run: |-
+        echo "Cache-hit == ${{steps.cache-datasets.outputs.cache-hit == 'true'}}"
+
 
     - name: Installing datalad and git-annex
       if: steps.cache-datasets.outputs.cache-hit != 'true'
@@ -134,7 +135,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 5f64a9e03896489311d0047a27f8bf74786a8453
         AB_WORKFLOW_DIGEST: 
-          c29bec09f5969fb22439843a7ff9c51f6aa1a716eb3945e85d4915d2f4f8ada9
+          dff7fe1beed3facd99aa5942eb3e4b6c200b4805db301fa3dac53b6b1773874f
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

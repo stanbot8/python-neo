@@ -2,18 +2,18 @@
   "definition_blob_sha1": {
     ".github/workflows/alpha-bridge-ci-verify.yml": "21051178fb840f31162cde1a64943007a2178f3f",
     ".github/workflows/black-formatting.yml": "395eb60527acdc6ed198c308e615d733c81b8fd1",
-    ".github/workflows/caches_cron_job.yml": "c12d9bc751ee078338ac53c9bd8dbf4e9b46fc9c",
+    ".github/workflows/caches_cron_job.yml": "11f35c762e01d95a37b3a1218ff13cea2fcb9fc6",
     ".github/workflows/copy-neuropixels-probe-features.yml": "a6006b1302f01561c5a96632e1f60ddb02c6d4a1",
-    ".github/workflows/plexon2-testing.yml": "7d545819afe08c11fa8326597ad2ce711d01a027"
+    ".github/workflows/plexon2-testing.yml": "d945faa77fb19a455d5c0a9da7a6f2c6fee9a8a3"
   },
   "definition_sha256": {
     ".github/workflows/alpha-bridge-ci-verify.yml": "f1d0d506e1faf2ef9e00102fbf464fa1a74203bf3463e623621402b9de9e8a45",
     ".github/workflows/black-formatting.yml": "5a16d9ec31971318fe6a481f5478901c342b72cc3aff0eec73c6a24aa8137477",
-    ".github/workflows/caches_cron_job.yml": "0fe113a506450b1cf54583b25919f6badd01b3ead9206e75c8ceb02ab1897e01",
+    ".github/workflows/caches_cron_job.yml": "6c74479b49a5e9e9e63d6c9f9f7a48526d09d3870fa9e5cd5bc53e1b0057147d",
     ".github/workflows/copy-neuropixels-probe-features.yml": "83fb3eeced70fac7ac88eaf1c38ac3f3e89c020b3a5457901850a6315682f1b7",
-    ".github/workflows/plexon2-testing.yml": "fff3ff53a43c83e20c09c7132f865e3d6ab966d999d28aeeaf3271ff730403fb"
+    ".github/workflows/plexon2-testing.yml": "e3bb4eaacb7b82ba46f013c3b592c1c14fde7b051518a72d9e8f8802bae6bacc"
   },
-  "generator_sha256": "34bc8c1c1eb9b2799c6a06a6f7bd056799561a0342e1ccd9d7ec69c0f000ae82",
+  "generator_sha256": "9fe7eb2612d4c4d8436e5a627541cad32d0dcba429639855b5a0a2af04b9729a",
   "schema": "alpha-bridge/fork-ci",
   "source_branch": "master",
   "source_commit": "5f64a9e03896489311d0047a27f8bf74786a8453",

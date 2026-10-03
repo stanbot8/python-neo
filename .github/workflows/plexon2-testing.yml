@@ -32,7 +32,9 @@ jobs:
           github.sha }}
     - name: Get current year-month
       id: date
-      run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
+      run: |-
+        echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
+
 
     - name: Get ephy_testing_data current head hash
         # the key depend on the last commit repo https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git
@@ -139,7 +141,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 5f64a9e03896489311d0047a27f8bf74786a8453
         AB_WORKFLOW_DIGEST: 
-          593d6b656540de0326e1cf64d903ec71285dc0dd34837e80981b50c311f4324d
+          c1c4e0678998070eee0556407c0fd25518d2f72fbb152c7c71384053bcba87db
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

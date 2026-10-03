@@ -1,19 +1,19 @@
 {
   "definition_blob_sha1": {
     ".github/workflows/alpha-bridge-ci-verify.yml": "211d78b275bbb87055d46d18edfc9b309afb7fd3",
-    ".github/workflows/black-formatting.yml": "1cd92d19e57ef1df18f391eb3f5a75acddce46f9",
-    ".github/workflows/caches_cron_job.yml": "c88bc09020b112f36089d5e0e55116a4456dd48e",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "07c18bbb0fe453a40721fbbe5ae7b9bab228beb6",
-    ".github/workflows/plexon2-testing.yml": "82d103b38ceaac7e93578b1694dff1e224b95421"
+    ".github/workflows/black-formatting.yml": "aaeaa12d79d3cbf32fa86bc849e823a6f4ebd7ac",
+    ".github/workflows/caches_cron_job.yml": "089269da370d2b788e418249a0a7177dfd51a2a4",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "06bbd0cda0810f97be139944d04ae7a0c30ebc6f",
+    ".github/workflows/plexon2-testing.yml": "9641355b7a40a70b3717bc7936473995aaf84cd5"
   },
   "definition_sha256": {
     ".github/workflows/alpha-bridge-ci-verify.yml": "4cac5461d20019fd71bd15ab6e775a433bcfc570d3cc96f9132a4bf68d15c04e",
-    ".github/workflows/black-formatting.yml": "6f73eddfd5b4b45f125e9e923295e0ad95df24c104969b35961fb9de032b7803",
-    ".github/workflows/caches_cron_job.yml": "edb8abb839d8797dc762da3536a76fd4b5210517a3ebb65644bfb5720e225dfc",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "b767d389b86a947036ff5752de1a3a4c61333713b7dc8724dcae52a0e5d1e5ef",
-    ".github/workflows/plexon2-testing.yml": "0477c7cff46f60a4cfa5484832f0738793dbf15145c88580313c490c2ddbd403"
+    ".github/workflows/black-formatting.yml": "58d49456e8e85635a5b4e04d6ce3cc095d0ce018017c340ed5e8cd76a9d33519",
+    ".github/workflows/caches_cron_job.yml": "afb2c88c9bd86564c23d470e34c01d4e6fa03148ff54fd944440b502503deac1",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "850dda289a8783ca60b006bf56d43bacc4369617b546c5d7e1045f2959ec1cae",
+    ".github/workflows/plexon2-testing.yml": "31208eb5780462096764af718b2d82cedd6f5a37bc4cf3c63139772b2be3ceaf"
   },
-  "generator_sha256": "f5fbad0230ba7fa85305a317f424ab1f31bb96ff28ce023a46664fdaad8051c9",
+  "generator_sha256": "3b26cda454cba3b637212cdea3d130c69e2223d93535daef4f59e8f73b2e6cc3",
   "schema": "alpha-bridge/fork-ci",
   "source_branch": "master",
   "source_commit": "5f64a9e03896489311d0047a27f8bf74786a8453",

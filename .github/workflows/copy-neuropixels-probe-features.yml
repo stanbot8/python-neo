@@ -13,6 +13,9 @@ jobs:
     - name: Checkout current repository
       uses: actions/checkout@v4
 
+      with:
+        ref: ${{ github.event_name == 'schedule' && 
+          '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
     - name: Copy file from external repo
       run: |
         # Download the file directly
@@ -46,6 +49,13 @@ jobs:
           repository.
         branch-suffix: short-commit-hash
         base: master
+    env:
+      ALPHA_BRIDGE_SOURCE_SHA: ${{ github.event_name == 'schedule' && 
+        '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
+      ALPHA_BRIDGE_SOURCE_REF: ${{ github.event_name == 'schedule' && 
+        'refs/heads/master' || github.ref }}
+      ALPHA_BRIDGE_SOURCE_REF_NAME: ${{ github.event_name == 'schedule' && 
+        'master' || github.ref_name }}
     needs:
     - alpha_bridge_inputs
     if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
@@ -71,7 +81,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 5f64a9e03896489311d0047a27f8bf74786a8453
         AB_WORKFLOW_DIGEST: 
-          8a800f9e5ad18467b290dc09844a07bdd41ba7dab018c212d89a8e7b514f065a
+          5cdcdf4fd1263b7ddaba01eead447f0d2694a8570bda8e3d3f5b39f8c0978180
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

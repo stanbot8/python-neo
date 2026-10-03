@@ -14,18 +14,25 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
-        python-version: ['3.9', '3.12']
-        numpy-version: ['1.26', '2.0']
+        os:
+        - ubuntu-latest
+        python-version:
+        - '3.9'
+        - '3.12'
+        numpy-version:
+        - '1.26'
+        - '2.0'
     defaults:
       # by default run in bash mode (required for conda usage)
       run:
         shell: bash -l {0}
-    steps:
-
-    - name: Checkout repository
+    steps: -
+      name: Checkout repository
       uses: actions/checkout@v4
 
+      with:
+        ref: ${{ github.event_name == 'schedule' && 
+          '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
     - name: Get current year-month
       id: date
       run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
@@ -110,6 +117,13 @@ jobs:
         # only neo.rawio and neo.io
         pytest --cov=neo neo/test/rawiotest
         pytest --cov=neo neo/test/iotest
+    env:
+      ALPHA_BRIDGE_SOURCE_SHA: ${{ github.event_name == 'schedule' && 
+        '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
+      ALPHA_BRIDGE_SOURCE_REF: ${{ github.event_name == 'schedule' && 
+        'refs/heads/master' || github.ref }}
+      ALPHA_BRIDGE_SOURCE_REF_NAME: ${{ github.event_name == 'schedule' && 
+        'master' || github.ref_name }}
     needs:
     - alpha_bridge_inputs
     if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
@@ -135,7 +149,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 5f64a9e03896489311d0047a27f8bf74786a8453
         AB_WORKFLOW_DIGEST: 
-          cbc28cef12ce6e66bac996790ebdaddae69be2d9747c63d4336cfcccbb1f3fc9
+          fc5a8a532b871c3365784fa286711e5c1215f9b3bd01d3e4872a8f2bffa157fa
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

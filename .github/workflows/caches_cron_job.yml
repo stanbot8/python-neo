@@ -65,9 +65,8 @@ jobs:
   create-data-cache-if-missing:
     name: Caching data env
     runs-on: ubuntu-latest
-    steps:
-
-    - name: Get current hash (SHA) of the ephy_testing_data repo
+    steps: -
+      name: Get current hash (SHA) of the ephy_testing_data repo
       id: ephy_testing_data
       run: |
         echo "dataset_hash=$(git ls-remote https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git HEAD | cut -f1)" >> $GITHUB_OUTPUT
@@ -109,6 +108,13 @@ jobs:
         du -hs ephy_testing_data
         cd ephy_testing_data
         pwd
+    env:
+      ALPHA_BRIDGE_SOURCE_SHA: ${{ github.event_name == 'schedule' && 
+        '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
+      ALPHA_BRIDGE_SOURCE_REF: ${{ github.event_name == 'schedule' && 
+        'refs/heads/master' || github.ref }}
+      ALPHA_BRIDGE_SOURCE_REF_NAME: ${{ github.event_name == 'schedule' && 
+        'master' || github.ref_name }}
     needs:
     - alpha_bridge_inputs
     if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
@@ -134,7 +140,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 5f64a9e03896489311d0047a27f8bf74786a8453
         AB_WORKFLOW_DIGEST: 
-          a4c714346a74ab45e4098becc663f89b1075a389cdfb14b26cb1d835e7dd5671
+          5920b66f5bbf096ee0a8a7d12a37b07758209355e29591c9e0b09c2ceab0411e
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

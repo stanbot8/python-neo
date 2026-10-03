@@ -12,6 +12,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+      with:
+        ref: ${{ github.event_name == 'schedule' && 
+          '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
     - name: Check black formatting
       id: black-check
       uses: psf/black@stable
@@ -34,6 +37,13 @@ jobs:
         title: Black formatting
         body: Reformatting code with black style
         branch: black-formatting
+    env:
+      ALPHA_BRIDGE_SOURCE_SHA: ${{ github.event_name == 'schedule' && 
+        '5f64a9e03896489311d0047a27f8bf74786a8453' || github.sha }}
+      ALPHA_BRIDGE_SOURCE_REF: ${{ github.event_name == 'schedule' && 
+        'refs/heads/master' || github.ref }}
+      ALPHA_BRIDGE_SOURCE_REF_NAME: ${{ github.event_name == 'schedule' && 
+        'master' || github.ref_name }}
     needs:
     - alpha_bridge_inputs
     if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
@@ -59,7 +69,7 @@ jobs:
         AB_RUN_ID: ${{ github.run_id }}
         AB_HEAD_SHA: 5f64a9e03896489311d0047a27f8bf74786a8453
         AB_WORKFLOW_DIGEST: 
-          ed83c82317da53e426b5bcd12c2989efa1b50e3419f152a9b2948d9572e76539
+          157ed5a1ea5f532769685651e120b73a54777eda7662802ab1b191e8147d56bc
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

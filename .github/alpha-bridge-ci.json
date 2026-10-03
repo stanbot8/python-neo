@@ -1,0 +1,29 @@
+{
+  "definition_blob_sha1": {
+    ".github/workflows/alpha-bridge-ci-verify.yml": "0588ba302e7a97a9721ae7494f6b9aca053476b6",
+    ".github/workflows/black-formatting.yml": "d489fdf866c0eb8b05081f1eea8033c6ca28ab83",
+    ".github/workflows/caches_cron_job.yml": "a904b51e637483754bd290a59ff91c9648c9ea34",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "19a08c54805eda29a4d6ebcf452ef975945919b1",
+    ".github/workflows/plexon2-testing.yml": "c41103b85ed0308997eece0d6bdbdf6a99285321"
+  },
+  "definition_sha256": {
+    ".github/workflows/alpha-bridge-ci-verify.yml": "d3dacd19a9c94cd86ca5ba24b075c35f3ff224d155ca5891f3b4325ece933dac",
+    ".github/workflows/black-formatting.yml": "595ffd687f3c8b37369b77b0370430daaa80dc45c6b4b58affd3b93f4bee7e07",
+    ".github/workflows/caches_cron_job.yml": "0d0e66a6ccf8835cef9c29386e249488e94b1e1d2d40218be436413b2b871ce6",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "d0d7889db07377c98d940d873bc0ff1b3eb61c4b00c07b7b71f12b4c1b11d768",
+    ".github/workflows/plexon2-testing.yml": "e59d73358dd89403d92a06ea14ce15f9703341ab66a8b96a3b75832ec86aa411"
+  },
+  "generator_sha256": "f238e5d52b0ec5c07f088af203f93698fbdea22a995856dc18c50f5365431353",
+  "schema": "alpha-bridge/fork-ci",
+  "source_branch": "master",
+  "source_commit": "5f64a9e03896489311d0047a27f8bf74786a8453",
+  "source_repository": "NeuralEnsemble/python-neo",
+  "version": 1,
+  "workflows": [
+    ".github/workflows/alpha-bridge-ci-verify.yml",
+    ".github/workflows/black-formatting.yml",
+    ".github/workflows/caches_cron_job.yml",
+    ".github/workflows/copy-neuropixels-probe-features.yml",
+    ".github/workflows/plexon2-testing.yml"
+  ]
+}

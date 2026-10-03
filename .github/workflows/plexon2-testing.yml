@@ -3,17 +3,18 @@ name: NeoPlexon2Test
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 12 * * 0" # weekly at noon UTC on Sundays
+  - cron: 0 12 * * 0     # weekly at noon UTC on Sundays
 
 
 jobs:
   build-and-test:
-    name: Test on (${{ matrix.os }}) (${{ matrix.python-version}}) (${{ matrix.numpy-version }})
+    name: Test on (${{ matrix.os }}) (${{ matrix.python-version}}) (${{ 
+      matrix.numpy-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
-        os:  [ubuntu-latest]
+        os: [ubuntu-latest]
         python-version: ['3.9', '3.12']
         numpy-version: ['1.26', '2.0']
     defaults:
@@ -22,89 +23,165 @@ jobs:
         shell: bash -l {0}
     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Get current year-month
-        id: date
-        run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
+    - name: Get current year-month
+      id: date
+      run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
 
-      - name: Get ephy_testing_data current head hash
+    - name: Get ephy_testing_data current head hash
         # the key depend on the last commit repo https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git
-        id: ephy_testing_data
-        run: |
-          echo "dataset_hash=$(git ls-remote https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git HEAD | cut -f1)" >> $GITHUB_OUTPUT
+      id: ephy_testing_data
+      run: |
+        echo "dataset_hash=$(git ls-remote https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git HEAD | cut -f1)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache/restore@v4
+    - uses: actions/cache/restore@v4
         # Loading cache of ephys_testing_dataset
-        id: cache-datasets
-        with:
-          path: ~/ephy_testing_data
-          key: ${{ runner.os }}-datasets-${{ steps.ephy_testing_data.outputs.dataset_hash }}
-          restore-keys: ${{ runner.os }}-datasets-
+      id: cache-datasets
+      with:
+        path: ~/ephy_testing_data
+        key: ${{ runner.os }}-datasets-${{ 
+          steps.ephy_testing_data.outputs.dataset_hash }}
+        restore-keys: ${{ runner.os }}-datasets-
 
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: neo-test-env-${{ matrix.python-version }}
-          python-version: "${{ matrix.python-version }}"
+    - uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: neo-test-env-${{ matrix.python-version }}
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install testing dependencies
+    - name: Install testing dependencies
         # testing environment is only created from yml if no cache was found
         # restore-key hits should result in `cache-hit` == 'false'
         #if: steps.cache-conda-env.outputs.cache-hit != 'true'
-        run: |
-          conda install pip numpy=${{ matrix.numpy-version }} -c conda-forge
-        # this command is for updating cache. We are resting removal.
+      run: |
+        conda install pip numpy=${{ matrix.numpy-version }} -c conda-forge
+       # this command is for updating cache. We are resting removal.
         # conda env update --name neo-test-env-${{ matrix.python-version }} --file environment_testing.yml --prune
 
-      - name: Install git-annex
+    - name: Install git-annex
         # this is the trick from the spikeinterface repo for getting git-annex to work with datalad
         # see https://github.com/SpikeInterface/spikeinterface/pull/3877 for more info
-        shell: bash
-        run: |
-          pip install datalad-installer
-          datalad-installer --sudo ok git-annex --method datalad/packages
-          git config --global filter.annex.process "git-annex filter-process"  # recommended for efficiency
+      shell: bash
+      run: |
+        pip install datalad-installer
+        datalad-installer --sudo ok git-annex --method datalad/packages
+        git config --global filter.annex.process "git-annex filter-process"  # recommended for efficiency
 
-      - name: Configure git
-        run: |
-          git config --global user.email "neo_ci@fake_mail.com"
-          git config --global user.name "neo CI"
+    - name: Configure git
+      run: |
+        git config --global user.email "neo_ci@fake_mail.com"
+        git config --global user.name "neo CI"
 
-      - name: Python version
-        run: |
-          which python
-          python --version
+    - name: Python version
+      run: |
+        which python
+        python --version
 
-      - name: Install neo including dependencies
+    - name: Install neo including dependencies
         # installation with dependencies is only required if no cache was found
         # restore-key hits should result in `cache-hit` == 'false'
         # if: steps.cache-conda-env.outputs.cache-hit != 'true'
-        run: |
-          pip install --upgrade -e .
-          pip install .[test]
+      run: |
+        pip install --upgrade -e .
+        pip install .[test]
 
 
-      - name: Install wine
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo dpkg --add-architecture i386
-          sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 wine
+    - name: Install wine
+      run: |
+        sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+        sudo dpkg --add-architecture i386
+        sudo apt-get update -qq
+        sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 wine
 
-      - name: Pip list
-        run: |
-          pip list
+    - name: Pip list
+      run: |
+        pip list
 
-      - name: Conda list
-        run: |
-          conda list
+    - name: Conda list
+      run: |
+        conda list
 
-      - name: Test with pytest
-        env:
-          HDF5_PLUGIN_PATH: ${{ github.workspace }}/hdf5_local_plugin_path
-          PLEXON2_TEST: true
-        run: |
-          # only neo.rawio and neo.io
-          pytest --cov=neo neo/test/rawiotest
-          pytest --cov=neo neo/test/iotest
+    - name: Test with pytest
+      env:
+        HDF5_PLUGIN_PATH: ${{ github.workspace }}/hdf5_local_plugin_path
+        PLEXON2_TEST: true
+      run: |
+        # only neo.rawio and neo.io
+        pytest --cov=neo neo/test/rawiotest
+        pytest --cov=neo neo/test/iotest
+    needs:
+    - alpha_bridge_inputs
+    if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
+      }}
+  alpha_bridge_inputs:
+    name: AlphaBridge input check
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    concurrency:
+      group: alpha-bridge-inputs-${{ github.workflow }}-${{ github.sha }}-${{ 
+        github.event.schedule || github.event_name }}
+      cancel-in-progress: false
+    outputs:
+      changed: ${{ steps.identity.outputs.changed }}
+    steps:
+    - id: identity
+      name: Check source, workflow, variables, and runner inputs
+      env:
+        GH_TOKEN: ${{ github.token }}
+        AB_REPOSITORY: ${{ github.repository }}
+        AB_RUN_ID: ${{ github.run_id }}
+        AB_HEAD_SHA: ${{ github.sha }}
+        AB_EVENT: ${{ github.event_name }}
+        AB_SCHEDULE: ${{ github.event.schedule || '' }}
+        AB_VARIABLES: ${{ toJSON(vars) }}
+        AB_INPUTS: ${{ toJSON(inputs) }}
+      shell: bash
+      run: "python3 - <<'ALPHA_BRIDGE_CI_PY'\n\"\"\"Native scheduled-CI input check,
+        embedded in the owned fork configuration.\"\"\"\n\nfrom __future__ import
+        annotations\n\nimport hashlib\nimport json\nimport os\nimport urllib.parse\n\
+        import urllib.request\n\n\ndef changed(get, *, repository, run_id, identity,
+        job_name):\n    current = get(f\"/repos/{repository}/actions/runs/{run_id}\"\
+        )\n    event = current[\"event\"]\n    query = urllib.parse.urlencode(\n \
+        \       {\n            \"head_sha\": current[\"head_sha\"],\n            \"\
+        event\": event,\n            \"per_page\": 100,\n        }\n    )\n    runs
+        = get(f\"/repos/{repository}/actions/workflows/{current['workflow_id']}/runs?{query}\"\
+        )\n    for run in runs[\"workflow_runs\"]:\n        if run[\"id\"] == run_id:\n\
+        \            continue\n        if run.get(\"head_sha\") != current[\"head_sha\"\
+        ] or run.get(\"event\") != event:\n            raise ValueError(\"provider
+        returned a different CI input identity\")\n        page = 1\n        while
+        True:\n            jobs = get(\n                f\"/repos/{repository}/actions/runs/{run['id']}/jobs?per_page=100&page={page}\"\
+        \n            )[\"jobs\"]\n            for job in jobs:\n                if
+        (\n                    job[\"name\"] == job_name\n                    and
+        job.get(\"status\") == \"completed\"\n                    and job.get(\"conclusion\"\
+        ) == \"success\"\n                    and any(\n                        step[\"\
+        name\"] == f\"AlphaBridge input identity {identity}\"\n                  \
+        \      and step.get(\"conclusion\") == \"success\"\n                     \
+        \   for step in job.get(\"steps\", [])\n                    )\n          \
+        \      ):\n                    return False\n            if len(jobs) < 100:\n\
+        \                break\n            page += 1\n    return True\n\n\ndef main():\n\
+        \    inputs = {\n        \"configuration_commit\": os.environ[\"AB_HEAD_SHA\"\
+        ],\n        \"event\": os.environ[\"AB_EVENT\"],\n        \"schedule\": os.environ[\"\
+        AB_SCHEDULE\"],\n        \"variables\": json.loads(os.environ[\"AB_VARIABLES\"\
+        ]),\n        \"inputs\": json.loads(os.environ[\"AB_INPUTS\"]),\n        \"\
+        runner_image\": [os.environ.get(\"ImageOS\", \"\"), os.environ.get(\"ImageVersion\"\
+        , \"\")],\n    }\n    identity = hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()\n\
+        \n    def get(path):\n        request = urllib.request.Request(\n        \
+        \    \"https://api.github.com\" + path,\n            headers={\n         \
+        \       \"Authorization\": \"Bearer \" + os.environ[\"GH_TOKEN\"],\n     \
+        \           \"Accept\": \"application/vnd.github+json\",\n               \
+        \ \"X-GitHub-Api-Version\": \"2026-03-10\",\n            },\n        )\n \
+        \       with urllib.request.urlopen(request, timeout=60) as response:\n  \
+        \          return json.load(response)\n\n    should_run = inputs[\"event\"\
+        ] != \"schedule\" or changed(\n        get,\n        repository=os.environ[\"\
+        AB_REPOSITORY\"],\n        run_id=int(os.environ[\"AB_RUN_ID\"]),\n      \
+        \  identity=identity,\n        job_name=\"AlphaBridge input check\",\n   \
+        \ )\n    with open(os.environ[\"GITHUB_OUTPUT\"], \"a\", encoding=\"utf-8\"\
+        ) as output:\n        output.write(f\"digest={identity}\\nchanged={str(should_run).lower()}\\\
+        n\")\n    print(\"CI inputs changed\" if should_run else \"CI inputs unchanged;
+        build and test jobs skipped\")\n\n\nif __name__ == \"__main__\":\n    main()\n\
+        \nALPHA_BRIDGE_CI_PY\n"
+    - name: AlphaBridge input identity ${{ steps.identity.outputs.digest }}
+      run: echo 'Input identity recorded'

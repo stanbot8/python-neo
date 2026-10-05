@@ -1,22 +1,22 @@
 {
   "definition_blob_sha1": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "21051178fb840f31162cde1a64943007a2178f3f",
-    ".github/workflows/black-formatting.yml": "395eb60527acdc6ed198c308e615d733c81b8fd1",
-    ".github/workflows/caches_cron_job.yml": "11f35c762e01d95a37b3a1218ff13cea2fcb9fc6",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "a6006b1302f01561c5a96632e1f60ddb02c6d4a1",
-    ".github/workflows/plexon2-testing.yml": "d945faa77fb19a455d5c0a9da7a6f2c6fee9a8a3"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "d0cf89303388ac1271c908436e9f4bfe75bae884",
+    ".github/workflows/black-formatting.yml": "79fe867259ea7219430ec72e91966a493b81bb3a",
+    ".github/workflows/caches_cron_job.yml": "2e6fd85fbd84bf33a4308a145c9c140a2b3c9eb9",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "c30e47c5a24059797b87e49f65f1247849a75a4c",
+    ".github/workflows/plexon2-testing.yml": "6b0421e867d2fdd496b3df778e4da498b83f3738"
   },
   "definition_sha256": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "f1d0d506e1faf2ef9e00102fbf464fa1a74203bf3463e623621402b9de9e8a45",
-    ".github/workflows/black-formatting.yml": "5a16d9ec31971318fe6a481f5478901c342b72cc3aff0eec73c6a24aa8137477",
-    ".github/workflows/caches_cron_job.yml": "6c74479b49a5e9e9e63d6c9f9f7a48526d09d3870fa9e5cd5bc53e1b0057147d",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "83fb3eeced70fac7ac88eaf1c38ac3f3e89c020b3a5457901850a6315682f1b7",
-    ".github/workflows/plexon2-testing.yml": "e3bb4eaacb7b82ba46f013c3b592c1c14fde7b051518a72d9e8f8802bae6bacc"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "99e25329cff2a8ae245f2f99850472bdd82f571c3bc33fadfc5ac11b9f29cb7e",
+    ".github/workflows/black-formatting.yml": "7d9d9a13f0d6b8a3bb24e7c95ee8043314689dcfa82449c58fd27b3a0fa6256c",
+    ".github/workflows/caches_cron_job.yml": "d472baeb7fe2c3863213858d92e5b9ac9deddf8f4862a885bae7f1f179824be5",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "a7af295c27c687b85045592c038c1f6806adf1de81b2446e5b71e8005743ae11",
+    ".github/workflows/plexon2-testing.yml": "5736ee1482266a903efd6ac71f3363b2b95db3dc81bdc92f8454cc4b37d6a394"
   },
-  "generator_sha256": "9fe7eb2612d4c4d8436e5a627541cad32d0dcba429639855b5a0a2af04b9729a",
+  "generator_sha256": "8bff038bcb711330ba78bf433a2923d57d4ddfeedd59b8324e44e2a59f6b0389",
   "schema": "alpha-bridge/fork-ci",
   "source_branch": "master",
-  "source_commit": "5f64a9e03896489311d0047a27f8bf74786a8453",
+  "source_commit": "ba57b739a020d62372515825198fe1a4ac08d359",
   "source_repository": "NeuralEnsemble/python-neo",
   "version": 1,
   "workflows": [

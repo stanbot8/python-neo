@@ -1,19 +1,29 @@
 {
   "definition_blob_sha1": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "d0cf89303388ac1271c908436e9f4bfe75bae884",
-    ".github/workflows/black-formatting.yml": "79fe867259ea7219430ec72e91966a493b81bb3a",
-    ".github/workflows/caches_cron_job.yml": "2e6fd85fbd84bf33a4308a145c9c140a2b3c9eb9",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "c30e47c5a24059797b87e49f65f1247849a75a4c",
-    ".github/workflows/plexon2-testing.yml": "6b0421e867d2fdd496b3df778e4da498b83f3738"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "d19efeb3bd029beb4c50fd874010d2b930d20715",
+    ".github/workflows/black-formatting.yml": "27ab77f1c9ac1f747d39934ef35ff2f49a4e8eeb",
+    ".github/workflows/caches_cron_job.yml": "52fb5703f840c6b7d198d3614932a3fd6e58dcbc",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "5c73735c1a118d008dcf980cb28e17591203d6a6",
+    ".github/workflows/core-test.yml": "dc8a21fe3491d364d6c6bbe1c5cf4da6cb02f90b",
+    ".github/workflows/ebrains.yml": "83a0ba0b546145806b2bf1d95dc998bd583ed4e4",
+    ".github/workflows/io-test.yml": "0e903b8e893bc75a40bf6e1291ab4223313d78fc",
+    ".github/workflows/io-test_trigger.yml": "49f3ac1159be938903b67d3248bd27285c51b808",
+    ".github/workflows/plexon2-testing.yml": "1ffb2e4dc6607a1c09be4b08b353a89a51fe173c",
+    ".github/workflows/publish-to-pypi-test.yml": "99920e13dea6c84f1dc3b97ac5c43d76820baa3a"
   },
   "definition_sha256": {
-    ".github/workflows/alpha-bridge-ci-verify.yml": "99e25329cff2a8ae245f2f99850472bdd82f571c3bc33fadfc5ac11b9f29cb7e",
-    ".github/workflows/black-formatting.yml": "7d9d9a13f0d6b8a3bb24e7c95ee8043314689dcfa82449c58fd27b3a0fa6256c",
-    ".github/workflows/caches_cron_job.yml": "d472baeb7fe2c3863213858d92e5b9ac9deddf8f4862a885bae7f1f179824be5",
-    ".github/workflows/copy-neuropixels-probe-features.yml": "a7af295c27c687b85045592c038c1f6806adf1de81b2446e5b71e8005743ae11",
-    ".github/workflows/plexon2-testing.yml": "5736ee1482266a903efd6ac71f3363b2b95db3dc81bdc92f8454cc4b37d6a394"
+    ".github/workflows/alpha-bridge-ci-verify.yml": "8fde9e2f5e1b37bbbb22794427ac6d217d8b18bc857606edd0b072e89c58b436",
+    ".github/workflows/black-formatting.yml": "ed0372f87a059873bc5205e012ea9fbd051f26e364ecd91e4bb045bbe6b9078d",
+    ".github/workflows/caches_cron_job.yml": "c08fd69435333168d54bc2831fb06c70f30f7b2e8fc0e7cb253b302014bbd5d0",
+    ".github/workflows/copy-neuropixels-probe-features.yml": "b48c88f3f4ebc844e287f5d00cfb8e7f234a0c21acd72fefc870df42707de704",
+    ".github/workflows/core-test.yml": "ae308d56d72027a05966d31b37403cd07507fe59fdd19a1fc06902bf00e408ad",
+    ".github/workflows/ebrains.yml": "b58e96c747f667a7952fd07032c90be15a7a974e2e9e268aa7435c4d2fbb25d4",
+    ".github/workflows/io-test.yml": "9ebbeccc451b067943631a067b3a23f93e782f591337c2aa5402a456c0ccabcd",
+    ".github/workflows/io-test_trigger.yml": "d974947a123c459ede23bcd5044d3b0f21a374175d260dded3d80f62b5a65812",
+    ".github/workflows/plexon2-testing.yml": "78114630be158552475f2d103ec3963b274aa69f8b41125d7e76d536586b5f7f",
+    ".github/workflows/publish-to-pypi-test.yml": "682bc70bd300295e05e902d43bb04f7a064d0c3b08e2cc50882e6f939473db58"
   },
-  "generator_sha256": "8bff038bcb711330ba78bf433a2923d57d4ddfeedd59b8324e44e2a59f6b0389",
+  "generator_sha256": "f9d11fba5b604bac754f7ab7e40ccde549adf8e029da2ca91ed14e9ab94c0775",
   "schema": "alpha-bridge/fork-ci",
   "source_branch": "master",
   "source_commit": "ba57b739a020d62372515825198fe1a4ac08d359",
@@ -24,6 +34,11 @@
     ".github/workflows/black-formatting.yml",
     ".github/workflows/caches_cron_job.yml",
     ".github/workflows/copy-neuropixels-probe-features.yml",
-    ".github/workflows/plexon2-testing.yml"
+    ".github/workflows/core-test.yml",
+    ".github/workflows/ebrains.yml",
+    ".github/workflows/io-test.yml",
+    ".github/workflows/io-test_trigger.yml",
+    ".github/workflows/plexon2-testing.yml",
+    ".github/workflows/publish-to-pypi-test.yml"
   ]
 }

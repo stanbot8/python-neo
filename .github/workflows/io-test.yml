@@ -8,55 +8,66 @@ on:
         type: string
 
 concurrency:  # Cancel previous workflows on the same pull request
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ ((github.event_name == 'schedule' || 
+    github.event_name == 'workflow_run') && 'refs/heads/master' || github.ref) 
+    }}
+  cancel-in-progress: ${{ (github.event_name == 'workflow_dispatch' || 
+    github.run_attempt > 1) && (true) }}
 
 jobs:
   build-and-test:
-    name: Test on (${{ inputs.os }}) (${{ matrix.python-version}}) (${{ matrix.numpy-version }})
+    name: Test on (${{ inputs.os }}) (${{ matrix.python-version}}) (${{ 
+      matrix.numpy-version }})
     runs-on: ${{ inputs.os }}
     strategy:
       fail-fast: true
       matrix:
         python-version: ['3.10', '3.14']
-        numpy-version: ['1.26', '2.3.3']
+        numpy-version: ['1.26', 2.3.3]
         exclude:
-           - python-version: '3.10'
-             numpy-version: '2.3.3'
-           - python-version: '3.14'
-             numpy-version: '1.26'
+        - python-version: '3.10'
+          numpy-version: 2.3.3
+        - python-version: '3.14'
+          numpy-version: '1.26'
     defaults:
       # by default run in bash mode (required for conda usage)
       run:
         shell: bash -l {0}
     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Get current year-month
-        id: date
-        run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
+      with:
+        ref: ${{ (github.event_name == 'schedule' || github.event_name == 
+          'workflow_run') && 'ba57b739a020d62372515825198fe1a4ac08d359' || 
+          github.sha }}
+    - name: Get current year-month
+      id: date
+      run: |-
+        echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
 
-      - name: Get ephy_testing_data current head hash
+
+    - name: Get ephy_testing_data current head hash
         # the key depend on the last commit repo https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git
-        id: ephy_testing_data
-        run: |
-          echo "dataset_hash=$(git ls-remote https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git HEAD | cut -f1)" >> $GITHUB_OUTPUT
+      id: ephy_testing_data
+      run: |
+        echo "dataset_hash=$(git ls-remote https://gin.g-node.org/NeuralEnsemble/ephy_testing_data.git HEAD | cut -f1)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache/restore@v4
+    - uses: actions/cache/restore@v4
         # Loading cache of ephys_testing_dataset
-        id: cache-datasets
-        with:
-          path: ~/ephy_testing_data
-          key: ${{ runner.os }}-datasets-${{ steps.ephy_testing_data.outputs.dataset_hash }}
-          restore-keys: ${{ runner.os }}-datasets-
+      id: cache-datasets
+      with:
+        path: ~/ephy_testing_data
+        key: ${{ runner.os }}-datasets-${{ 
+          steps.ephy_testing_data.outputs.dataset_hash }}
+        restore-keys: ${{ runner.os }}-datasets-
 
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: neo-test-env-${{ matrix.python-version }}
-          python-version: "${{ matrix.python-version }}"
-      
+    - uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: neo-test-env-${{ matrix.python-version }}
+        python-version: ${{ matrix.python-version }}
+
       # TEST NOT USING CACHE
       #- name: Get current dependencies hash
       #  id: dependencies
@@ -76,41 +87,41 @@ jobs:
        #     ${{ runner.os }}-conda-env-${{ steps.dependencies.outputs.hash }}-
        #     ${{ runner.os }}-conda-env-
 
-      - name: Install testing dependencies
+    - name: Install testing dependencies
         # testing environment is only created from yml if no cache was found
         # restore-key hits should result in `cache-hit` == 'false'
         #if: steps.cache-conda-env.outputs.cache-hit != 'true'
-        run: |
-          conda install pip numpy=${{ matrix.numpy-version }} -c conda-forge
-        # this command is for updating cache. We are resting removal.
+      run: |
+        conda install pip numpy=${{ matrix.numpy-version }} -c conda-forge
+       # this command is for updating cache. We are resting removal.
         # conda env update --name neo-test-env-${{ matrix.python-version }} --file environment_testing.yml --prune
 
-      - name: Install git-annex
+    - name: Install git-annex
         # this is the trick from the spikeinterface repo for getting git-annex to work with datalad
         # see https://github.com/SpikeInterface/spikeinterface/pull/3877 for more info
-        shell: bash
-        run: |
-          pip install datalad-installer
-          datalad-installer --sudo ok git-annex --method datalad/packages
-          git config --global filter.annex.process "git-annex filter-process"  # recommended for efficiency
+      shell: bash
+      run: |
+        pip install datalad-installer
+        datalad-installer --sudo ok git-annex --method datalad/packages
+        git config --global filter.annex.process "git-annex filter-process"  # recommended for efficiency
 
-      - name: Configure git
-        run: |
-          git config --global user.email "neo_ci@fake_mail.com"
-          git config --global user.name "neo CI"
+    - name: Configure git
+      run: |
+        git config --global user.email "neo_ci@fake_mail.com"
+        git config --global user.name "neo CI"
 
-      - name: Python version
-        run: |
-          which python
-          python --version
+    - name: Python version
+      run: |
+        which python
+        python --version
 
-      - name: Install neo including dependencies
+    - name: Install neo including dependencies
         # installation with dependencies is only required if no cache was found
         # restore-key hits should result in `cache-hit` == 'false'
         # if: steps.cache-conda-env.outputs.cache-hit != 'true'
-        run: |
-          pip install --upgrade -e .
-          pip install .[test]
+      run: |
+        pip install --upgrade -e .
+        pip install .[test]
 
       # TEST NOT USING CACHE
       #- name: Install neo without dependencies
@@ -119,18 +130,147 @@ jobs:
       #  run: |
       #    pip install --no-dependencies -e .
 
-      - name: Pip list
-        run: |
-          pip list
+    - name: Pip list
+      run: |
+        pip list
 
-      - name: Conda list
-        run: |
-          conda list
+    - name: Conda list
+      run: |
+        conda list
 
-      - name: Test with pytest
-        env:
-          HDF5_PLUGIN_PATH: ${{ github.workspace }}/hdf5_local_plugin_path
-        run: |
-          # only neo.rawio and neo.io
-          pytest --cov=neo neo/test/rawiotest
-          pytest --cov=neo neo/test/iotest
+    - name: Test with pytest
+      env:
+        HDF5_PLUGIN_PATH: ${{ github.workspace }}/hdf5_local_plugin_path
+      run: |
+        # only neo.rawio and neo.io
+        pytest --cov=neo neo/test/rawiotest
+        pytest --cov=neo neo/test/iotest
+    needs:
+    - alpha_bridge_inputs
+    if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
+      }}
+  alpha_bridge_inputs:
+    name: CI input check
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    concurrency:
+      group: alpha-bridge-inputs-${{ github.workflow }}-${{ github.sha }}-${{ 
+        github.event.schedule || github.event_name }}
+      cancel-in-progress: false
+    outputs:
+      changed: ${{ steps.identity.outputs.changed }}
+    steps:
+    - id: identity
+      name: Check source, workflow, variables, and runner inputs
+      env:
+        GH_TOKEN: ${{ github.token }}
+        AB_REPOSITORY: ${{ github.repository }}
+        AB_RUN_ID: ${{ github.run_id }}
+        AB_HEAD_SHA: ${{ (github.event_name == 'schedule' || github.event_name 
+          == 'workflow_run') && 'ba57b739a020d62372515825198fe1a4ac08d359' || 
+          github.sha }}
+        AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
+          'workflow_run') && 'refs/heads/master' || github.ref }}
+        AB_WORKFLOW_DIGEST: 
+          9baba86f6a285e0d428d277c1f4da0c036095ac1428301e90b0bfc1238544af2
+        AB_EVENT: ${{ github.event_name }}
+        AB_SCHEDULE: ${{ github.event.schedule || '' }}
+        AB_VARIABLES: ${{ toJSON(vars) }}
+        AB_INPUTS: ${{ toJSON(inputs) }}
+        AB_WORKFLOW_RUN: ${{ toJSON(github.event.workflow_run) }}
+      shell: bash
+      run: "python3 - <<'ALPHA_BRIDGE_CI_PY'\n\"\"\"Native automatic-CI input check,
+        embedded in the owned fork configuration.\"\"\"\n\nfrom __future__ import
+        annotations\n\nimport base64\nimport hashlib\nimport json\nimport os\nimport
+        re\nimport urllib.parse\nimport urllib.request\n\nINPUT_CHECK_NAMES = (\"\
+        CI input check\", \"AlphaBridge input check\")\nINPUT_IDENTITY_PREFIXES =
+        (\"CI input identity \", \"AlphaBridge input identity \")\n\n\ndef input_identity(job):\n\
+        \    for step in job.get(\"steps\", []):\n        if step.get(\"conclusion\"\
+        ) != \"success\":\n            continue\n        name = step.get(\"name\"\
+        , \"\")\n        for prefix in INPUT_IDENTITY_PREFIXES:\n            if name.startswith(prefix):\n\
+        \                identity = name.removeprefix(prefix)\n                if
+        re.fullmatch(r\"[0-9a-f]{64}\", identity):\n                    return identity\n\
+        \    return \"\"\n\n\ndef parent_has_work(get, repository, parent):\n    if
+        (\n        not parent\n        or parent.get(\"head_branch\") != \"alpha-bridge-ci\"\
+        \n        or parent.get(\"status\") != \"completed\"\n    ):\n        return
+        True\n    sha = parent[\"head_sha\"]\n    if re.fullmatch(r\"[0-9a-f]{40}\"\
+        , sha) is None:\n        raise ValueError(\"parent workflow has no exact configuration
+        commit\")\n    record = get(f\"/repos/{repository}\")\n    marker_file = get(f\"\
+        /repos/{repository}/contents/.github/alpha-bridge-ci.json?ref={sha}\")\n \
+        \   marker = json.loads(base64.b64decode(marker_file[\"content\"]))\n    if
+        (\n        record.get(\"fork\") is not True\n        or marker.get(\"schema\"\
+        ) != \"alpha-bridge/fork-ci\"\n        or marker.get(\"source_repository\"\
+        ) != record.get(\"parent\", {}).get(\"full_name\")\n    ):\n        raise
+        ValueError(\"parent CI configuration has no verified fork ownership\")\n \
+        \   path = parent[\"path\"].split(\"@\", 1)[0]\n    if not path.startswith(\"\
+        .github/workflows/\") or \"/\" in path.removeprefix(\".github/workflows/\"\
+        ):\n        raise ValueError(\"parent workflow path is outside its configuration
+        owner\")\n    definition = get(f\"/repos/{repository}/contents/{urllib.parse.quote(path,
+        safe='/')}?ref={sha}\")\n    if hashlib.sha256(base64.b64decode(definition[\"\
+        content\"])).hexdigest() != marker.get(\n        \"definition_sha256\", {}\n\
+        \    ).get(path):\n        raise ValueError(\"parent workflow differs from
+        its owned definition\")\n    if path == \".github/workflows/alpha-bridge-ci-verify.yml\"\
+        :\n        return False\n    jobs = []\n    page = 1\n    while True:\n  \
+        \      values = get(\n            f\"/repos/{repository}/actions/runs/{parent['id']}/jobs?per_page=100&page={page}\"\
+        \n        )[\"jobs\"]\n        jobs.extend(values)\n        if len(values)
+        < 100:\n            break\n        page += 1\n    guards = [\n        job\n\
+        \        for job in jobs\n        if job.get(\"name\") in INPUT_CHECK_NAMES\n\
+        \        and job.get(\"conclusion\") == \"success\"\n        and input_identity(job)\n\
+        \    ]\n    return not guards or any(\n        job not in guards and job.get(\"\
+        conclusion\") != \"skipped\" for job in jobs\n    )\n\n\ndef changed(get,
+        *, repository, run_id, identity, job_name):\n    current = get(f\"/repos/{repository}/actions/runs/{run_id}\"\
+        )\n    event = current[\"event\"]\n    page = 1\n    while True:\n       \
+        \ # Filter locally: GitHub caps filtered searches at 1,000 results.\n    \
+        \    query = urllib.parse.urlencode({\"per_page\": 100, \"page\": page})\n\
+        \        runs = get(f\"/repos/{repository}/actions/workflows/{current['workflow_id']}/runs?{query}\"\
+        )\n        for run in runs[\"workflow_runs\"]:\n            if run[\"id\"\
+        ] == run_id:\n                continue\n            if run.get(\"head_branch\"\
+        ) != current[\"head_branch\"] or run.get(\"event\") != event:\n          \
+        \      continue\n            job_page = 1\n            while True:\n     \
+        \           jobs = get(\n                    f\"/repos/{repository}/actions/runs/{run['id']}/jobs?per_page=100&page={job_page}\"\
+        \n                )[\"jobs\"]\n                for job in jobs:\n        \
+        \            if (\n                        (\n                           \
+        \ job[\"name\"] in INPUT_CHECK_NAMES\n                            if job_name
+        in INPUT_CHECK_NAMES\n                            else job[\"name\"] == job_name\n\
+        \                        )\n                        and job.get(\"status\"\
+        ) == \"completed\"\n                        and job.get(\"conclusion\") ==
+        \"success\"\n                        and input_identity(job) == identity\n\
+        \                    ):\n                        return False\n          \
+        \      if len(jobs) < 100:\n                    break\n                job_page
+        += 1\n        if len(runs[\"workflow_runs\"]) < 100:\n            return True\n\
+        \        page += 1\n\n\ndef main():\n    event = os.environ[\"AB_EVENT\"]\n\
+        \    event_payload = None\n    if event not in {\"schedule\", \"workflow_run\"\
+        }:\n        with open(os.environ[\"GITHUB_EVENT_PATH\"], encoding=\"utf-8\"\
+        ) as payload_file:\n            event_payload = json.load(payload_file)\n\
+        \    inputs = {\n        \"source_commit\": os.environ[\"AB_HEAD_SHA\"],\n\
+        \        \"source_ref\": os.environ[\"AB_REF\"],\n        \"workflow_definition\"\
+        : os.environ[\"AB_WORKFLOW_DIGEST\"],\n        \"event\": event,\n       \
+        \ \"event_payload\": event_payload,\n        \"schedule\": os.environ[\"AB_SCHEDULE\"\
+        ],\n        \"variables\": json.loads(os.environ[\"AB_VARIABLES\"]),\n   \
+        \     \"inputs\": json.loads(os.environ[\"AB_INPUTS\"]),\n        \"runner_image\"\
+        : [os.environ.get(\"ImageOS\", \"\"), os.environ.get(\"ImageVersion\", \"\"\
+        )],\n        \"producer\": json.loads(os.environ.get(\"AB_WORKFLOW_RUN\",
+        \"null\")),\n    }\n    identity = hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()\n\
+        \n    def get(path):\n        request = urllib.request.Request(\n        \
+        \    \"https://api.github.com\" + path,\n            headers={\n         \
+        \       \"Authorization\": \"Bearer \" + os.environ[\"GH_TOKEN\"],\n     \
+        \           \"Accept\": \"application/vnd.github+json\",\n               \
+        \ \"X-GitHub-Api-Version\": \"2026-03-10\",\n            },\n        )\n \
+        \       with urllib.request.urlopen(request, timeout=60) as response:\n  \
+        \          return json.load(response)\n\n    manual = event == \"workflow_dispatch\"\
+        \ or int(os.environ[\"GITHUB_RUN_ATTEMPT\"]) > 1\n    should_run = manual
+        or (\n        (\n            inputs[\"event\"] != \"workflow_run\"\n     \
+        \       or parent_has_work(get, os.environ[\"AB_REPOSITORY\"], inputs[\"producer\"\
+        ])\n        )\n        and changed(\n            get,\n            repository=os.environ[\"\
+        AB_REPOSITORY\"],\n            run_id=int(os.environ[\"AB_RUN_ID\"]),\n  \
+        \          identity=identity,\n            job_name=\"CI input check\",\n\
+        \        )\n    )\n    with open(os.environ[\"GITHUB_OUTPUT\"], \"a\", encoding=\"\
+        utf-8\") as output:\n        output.write(f\"digest={identity}\\nchanged={str(should_run).lower()}\\\
+        n\")\n    print(\n        \"Explicit CI run requested\"\n        if manual\n\
+        \        else \"CI inputs changed\"\n        if should_run\n        else \"\
+        CI inputs unchanged; build and test jobs skipped\"\n    )\n\n\nif __name__
+        == \"__main__\":\n    main()\n\nALPHA_BRIDGE_CI_PY\n"
+    - name: CI input identity ${{ steps.identity.outputs.digest }}
+      run: echo 'Input identity recorded'

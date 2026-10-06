@@ -1,23 +1,18 @@
-name: NeoIoTest-automatic-trigger
-
+name: CI input consumer
 on:
-  pull_request:
-    branches: [master]
-    types: [synchronize, opened, reopened, ready_for_review]
-
-  # run checks on any change of master, including merge of PRs
-  push:
-    branches: [master]
-
+  workflow_call:
+    inputs:
+      probe:
+        type: string
+        required: true
+      slot:
+        type: string
+        required: true
 jobs:
-  call-iotests:
-    uses: ./.github/workflows/io-test.yml
-    with:
-      os: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      actions: read
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo 'Changed inputs reached consumer ${{ inputs.slot }}'
     needs:
     - alpha_bridge_inputs
     if: |-
@@ -29,7 +24,7 @@ jobs:
       actions: read
       contents: read
     concurrency:
-      group: alpha-bridge-inputs-3a2b312d685c0739-${{ github.workflow }}-${{ 
+      group: alpha-bridge-inputs-04fbff4179fd2373-${{ github.workflow }}-${{ 
         github.sha }}-${{ github.event.schedule || github.event_name }}
       cancel-in-progress: false
       queue: max
@@ -42,13 +37,10 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         AB_REPOSITORY: ${{ github.repository }}
         AB_RUN_ID: ${{ github.run_id }}
-        AB_HEAD_SHA: ${{ (github.event_name == 'schedule' || github.event_name 
-          == 'workflow_run') && 'ba57b739a020d62372515825198fe1a4ac08d359' || 
-          github.sha }}
-        AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
-          'workflow_run') && 'refs/heads/master' || github.ref }}
+        AB_HEAD_SHA: ${{ github.sha }}
+        AB_REF: ${{ github.ref }}
         AB_WORKFLOW_DIGEST: 
-          2468858bbf9b2332b85693d3d2e4bb541c36b947cb75ec9c2f7953900e4b2165
+          204202fd1f1fa08793779bf1cda80736b14fcfc47bf1262b68cdcee1a843ad8c
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

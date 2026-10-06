@@ -1,23 +1,34 @@
-name: NeoIoTest-automatic-trigger
-
+name: CI input probe
 on:
-  pull_request:
-    branches: [master]
-    types: [synchronize, opened, reopened, ready_for_review]
-
-  # run checks on any change of master, including merge of PRs
-  push:
-    branches: [master]
-
+  workflow_call:
+    inputs:
+      probe:
+        type: string
+        required: true
 jobs:
-  call-iotests:
-    uses: ./.github/workflows/io-test.yml
+  nested0:
+    uses: ./.github/workflows/alpha-bridge-ci-consumer.yml
     with:
-      os: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      actions: read
+      probe: ${{ inputs.probe }}
+      slot: '0'
+    needs:
+    - alpha_bridge_inputs
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
+  nested1:
+    uses: ./.github/workflows/alpha-bridge-ci-consumer.yml
+    with:
+      probe: ${{ inputs.probe }}
+      slot: '1'
+    needs:
+    - alpha_bridge_inputs
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
+  nested2:
+    uses: ./.github/workflows/alpha-bridge-ci-consumer.yml
+    with:
+      probe: ${{ inputs.probe }}
+      slot: '2'
     needs:
     - alpha_bridge_inputs
     if: |-
@@ -29,7 +40,7 @@ jobs:
       actions: read
       contents: read
     concurrency:
-      group: alpha-bridge-inputs-3a2b312d685c0739-${{ github.workflow }}-${{ 
+      group: alpha-bridge-inputs-79967559e6c019b6-${{ github.workflow }}-${{ 
         github.sha }}-${{ github.event.schedule || github.event_name }}
       cancel-in-progress: false
       queue: max
@@ -42,15 +53,12 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         AB_REPOSITORY: ${{ github.repository }}
         AB_RUN_ID: ${{ github.run_id }}
-        AB_HEAD_SHA: ${{ (github.event_name == 'schedule' || github.event_name 
-          == 'workflow_run') && 'ba57b739a020d62372515825198fe1a4ac08d359' || 
-          github.sha }}
-        AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
-          'workflow_run') && 'refs/heads/master' || github.ref }}
+        AB_HEAD_SHA: ${{ github.sha }}
+        AB_REF: ${{ github.ref }}
         AB_WORKFLOW_DIGEST: 
-          2468858bbf9b2332b85693d3d2e4bb541c36b947cb75ec9c2f7953900e4b2165
-        AB_EVENT: ${{ github.event_name }}
-        AB_SCHEDULE: ${{ github.event.schedule || '' }}
+          bd367cba8e8810e351ab7c5db42453bb5c3cdfbec864efe5672bbab3a0053290
+        AB_EVENT: schedule
+        AB_SCHEDULE: alpha-bridge verification
         AB_VARIABLES: ${{ toJSON(vars) }}
         AB_INPUTS: ${{ toJSON(inputs) }}
         AB_DEFAULT_PERMISSIONS: read

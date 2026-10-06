@@ -2,7 +2,7 @@ name: Sync neuropixels_probe_features from ProbeTable
 
 on:
   schedule:
-  - cron: 0 0 * * 1     # Every Monday at 00:00 UTC
+  - cron: '0 0 * * 1'   # Every Monday at 00:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -45,15 +45,14 @@ jobs:
       if: steps.commit.outputs.changes == 'true'
       uses: peter-evans/create-pull-request@v7
       with:
-        title: Update Neuropixels probe features
-        body: This PR updates the probe features JSON file from the ProbeTable 
-          repository.
+        title: "Update Neuropixels probe features"
+        body: "This PR updates the probe features JSON file from the ProbeTable repository."
         branch-suffix: short-commit-hash
-        base: master
+        base: "master"
     needs:
     - alpha_bridge_inputs
-    if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
-      }}
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
   alpha_bridge_inputs:
     name: CI input check
     runs-on: ubuntu-latest
@@ -79,7 +78,7 @@ jobs:
         AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
           'workflow_run') && 'refs/heads/master' || github.ref }}
         AB_WORKFLOW_DIGEST: 
-          43d2dc8307fba49a877259ba8fc5d8f416b1f3e976e19f192d39bd418dc1c454
+          b7f0be556cbeedfdf3beaa355b3d3a5af291149038f6bdf331cfce0faec72d0c
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

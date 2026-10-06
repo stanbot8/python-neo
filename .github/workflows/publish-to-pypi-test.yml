@@ -18,7 +18,7 @@ jobs:
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: "3.10"
     - name: Install Tools
       run: |
         python -m pip install --upgrade pip
@@ -64,8 +64,8 @@ jobs:
         twine upload --repository testpypi dist/*
     needs:
     - alpha_bridge_inputs
-    if: ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' 
-      }}
+    if: |-
+      ${{ (success()) && needs.alpha_bridge_inputs.outputs.changed == 'true' }}
   alpha_bridge_inputs:
     name: CI input check
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
         AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
           'workflow_run') && 'refs/heads/master' || github.ref }}
         AB_WORKFLOW_DIGEST: 
-          81905a302734880edc3563dee9280f9fe5d073c2a6140a17804d3fa667185411
+          5ea1fe97994768966a60fa0a9206984addce3ef12db980e03a88e429f3331b58
         AB_EVENT: ${{ github.event_name }}
         AB_SCHEDULE: ${{ github.event.schedule || '' }}
         AB_VARIABLES: ${{ toJSON(vars) }}

@@ -1,67 +1,15 @@
-name: Release to Test PyPI
-
+name: CI input probe
 on:
-  push:
-    tags:
-    - '*'
+  workflow_call:
+    inputs:
+      probe:
+        type: string
+        required: true
 jobs:
-  release:
-    environment: TEST_PYPI_API_TOKEN
+  check:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ (github.event_name == 'schedule' || github.event_name == 
-          'workflow_run') && 'ba57b739a020d62372515825198fe1a4ac08d359' || 
-          github.sha }}
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-    - name: Install Tools
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine build
-        pip install .
-    - name: Get the tag version
-      id: get-version
-      run: |
-        echo ${ALPHA_BRIDGE_SOURCE_REF#refs/tags/}
-        echo ::set-output name=TAG::${ALPHA_BRIDGE_SOURCE_REF#refs/tags/}
-      env:
-        ALPHA_BRIDGE_SOURCE_SHA: ${{ (github.event_name == 'schedule' || 
-          github.event_name == 'workflow_run') && 
-          'ba57b739a020d62372515825198fe1a4ac08d359' || github.sha }}
-        ALPHA_BRIDGE_SOURCE_REF: ${{ (github.event_name == 'schedule' || 
-          github.event_name == 'workflow_run') && 'refs/heads/master' || 
-          github.ref }}
-        ALPHA_BRIDGE_SOURCE_REF_NAME: ${{ (github.event_name == 'schedule' || 
-          github.event_name == 'workflow_run') && 'master' || github.ref_name }}
-    - name: Test version/tag correspondence
-      id: version-check
-      run: |
-        neo_version=$(python -c "import neo; print(neo.__version__)")
-        tag_version=${{ steps.get-version.outputs.TAG }}
-        echo $neo_version
-        echo $tag_version
-        if [[ $tag_version == $neo_version ]]; then
-            echo "VERSION_TAG_MATCH=true" >> $GITHUB_OUTPUT
-            echo "Version matches tag, proceeding with release to Test PyPI"
-        else
-            echo "VERSION_TAG_MATCH=false" >> $GITHUB_OUTPUT
-            echo "Version does not match tag! Fix this before proceeding."
-            exit 1
-        fi
-    - name: Package and Upload
-      env:
-        STACKMANAGER_VERSION: ${{ github.event.release.tag_name }}
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
-      if: ${{ steps.version-check.outputs.VERSION_TAG_MATCH == 'true' }}
-      run: |
-        python -m build --sdist --wheel
-        twine upload --repository testpypi dist/*
+    - run: echo 'Changed inputs reached the consumer'
     needs:
     - alpha_bridge_inputs
     if: |-
@@ -85,15 +33,12 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         AB_REPOSITORY: ${{ github.repository }}
         AB_RUN_ID: ${{ github.run_id }}
-        AB_HEAD_SHA: ${{ (github.event_name == 'schedule' || github.event_name 
-          == 'workflow_run') && 'ba57b739a020d62372515825198fe1a4ac08d359' || 
-          github.sha }}
-        AB_REF: ${{ (github.event_name == 'schedule' || github.event_name == 
-          'workflow_run') && 'refs/heads/master' || github.ref }}
+        AB_HEAD_SHA: ${{ github.sha }}
+        AB_REF: ${{ github.ref }}
         AB_WORKFLOW_DIGEST: 
-          6b0a2e81ba8f77d3ac61786cbcd234472b3b9cb31a18165e7bd9c0526d545946
-        AB_EVENT: ${{ github.event_name }}
-        AB_SCHEDULE: ${{ github.event.schedule || '' }}
+          aeb0c6e2caf9e7aa08ace6ecf5bf2a46ae50d577b223dd23f9d645eb0c1d6792
+        AB_EVENT: schedule
+        AB_SCHEDULE: alpha-bridge verification
         AB_VARIABLES: ${{ toJSON(vars) }}
         AB_INPUTS: ${{ toJSON(inputs) }}
         AB_WORKFLOW_RUN: ${{ toJSON(github.event.workflow_run) }}

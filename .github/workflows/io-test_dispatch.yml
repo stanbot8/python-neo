@@ -5,15 +5,19 @@ on:
     inputs:
       os:
         description: 'The operating system to run the tests on'
-        required: True
+        required: true
         default: 'ubuntu-latest'
         type: choice
         options:
-          - macos-latest
-          - windows-latest
+        - macos-latest
+        - windows-latest
 
 jobs:
   call-iotests:
     uses: ./.github/workflows/io-test.yml
     with:
       os: ${{ inputs.os }}
+    permissions:
+      contents: read
+      packages: read
+      actions: read
